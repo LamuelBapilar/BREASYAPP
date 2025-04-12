@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    //Custom color
+    <color name="Primary_Yellow">#f9bb50</color>
+    <color name="Secondary_Yellow">#f6cb85</color>
+    <color name="Primary_Text">#41454c</color>
+    <color name="Secondary_Text">#adadad</color>
+    <color name="background">#f3f2ef</color>
+</resources>
