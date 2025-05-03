@@ -76,7 +76,7 @@ public class Profilepage extends AppCompatActivity {
         dosebutton = findViewById(R.id.dosebutton);
 
         //Startup Functions
-        SessionStatus();
+        SessionStatus(); // check sessions
 
     }
 
