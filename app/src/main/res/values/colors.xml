@@ -8,4 +8,10 @@
     <color name="Primary_Text">#41454c</color>
     <color name="Secondary_Text">#adadad</color>
     <color name="background">#f3f2ef</color>
+    //
+    <color name="Primary_Mint_Blue">#BFFFED</color>
+    <color name="Primary_Mint_Green">#6DD19C</color>
+    <color name="Secondary_Mint_Green">#E8FAEA</color>
+    <color name="Mint_Background">#3FEBFAEC</color>
+
 </resources>

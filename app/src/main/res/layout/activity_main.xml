@@ -130,7 +130,7 @@
         android:clickable="true"
         android:fontFamily="@font/baloo_bhai"
         android:onClick="gotoExperimental"
-        android:text="BreasyApp V 0.1"
+        android:text="BreasyApp V 1.2"
         android:textColor="@color/Primary_Text"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

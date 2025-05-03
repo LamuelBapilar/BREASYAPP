@@ -25,28 +25,13 @@
         app:srcCompat="@drawable/back"
         app:tint="@color/Secondary_Text" />
 
-    <TextView
-        android:id="@+id/name_greetings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="750dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Hello, Lamuel!"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.217"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/myrecords"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="249dp"
         android:layout_marginBottom="408dp"
         android:fontFamily="@font/baloo_bhai"
@@ -55,10 +40,10 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lineChart"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imageView11"
@@ -68,6 +53,7 @@
         android:layout_marginTop="6dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="684dp"
+        android:onClick="Profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.875"
@@ -101,12 +87,14 @@
         android:layout_marginTop="86dp"
         android:layout_marginEnd="13dp"
         android:layout_marginBottom="659dp"
-        android:onClick="Logout"
+        android:onClick="Records"
         android:text="Records"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:toggleCheckedStateOnClick="true" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
@@ -121,32 +109,147 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.897" />
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="32dp"
-        android:drawableStart="@android:drawable/stat_sys_data_bluetooth"
-        android:drawableTint="@color/Primary_Text"
-        app:layout_constraintBottom_toTopOf="@+id/record_Button"
-        app:layout_constraintEnd_toStartOf="@+id/imageView11"
-        app:layout_constraintHorizontal_bias="0.861"
-        app:layout_constraintStart_toEndOf="@+id/name_greetings"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ListView
-        android:id="@+id/listView"
-        android:layout_width="366dp"
-        android:layout_height="383dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="408dp"
-        android:layout_marginEnd="11dp"
-        android:layout_marginBottom="16dp"
+        android:id="@+id/recordview"
+        android:layout_width="341dp"
+        android:layout_height="342dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="448dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="679dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Hello, ?"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.222"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.024" />
+
+    <Button
+        android:id="@+id/buttonAll"
+        android:layout_width="47dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="397dp"
+        android:layout_marginEnd="302dp"
+        android:layout_marginBottom="359dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="All"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button2Y"
+        android:layout_width="43dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="309dp"
+        android:layout_marginTop="396dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="359dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="2Y"
+        android:textSize="12sp"
+        android:backgroundTint="#DDDDDD"
+        android:textColor="#666666"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonToday"
+        android:layout_width="52dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="397dp"
+        android:layout_marginEnd="243dp"
+        android:layout_marginBottom="359dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Today"
+        android:textSize="12sp"
+        android:backgroundTint="#DDDDDD"
+        android:textColor="#666666"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonWeek"
+        android:layout_width="54dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="397dp"
+        android:layout_marginEnd="182dp"
+        android:layout_marginBottom="359dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Week"
+        android:textSize="12sp"
+        android:backgroundTint="#DDDDDD"
+        android:textColor="#666666"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonMonth"
+        android:layout_width="56dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="185dp"
+        android:layout_marginTop="397dp"
+        android:layout_marginEnd="119dp"
+        android:layout_marginBottom="359dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Month"
+        android:textSize="12sp"
+        android:backgroundTint="#DDDDDD"
+        android:textColor="#666666"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonYear"
+        android:layout_width="54dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="249dp"
+        android:layout_marginTop="397dp"
+        android:layout_marginEnd="57dp"
+        android:layout_marginBottom="358dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Year"
+        android:textSize="12sp"
+        android:backgroundTint="#DDDDDD"
+        android:textColor="#666666"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

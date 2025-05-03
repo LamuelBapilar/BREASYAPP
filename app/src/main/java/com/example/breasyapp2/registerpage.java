@@ -22,8 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 public class registerpage extends AppCompatActivity {
 
     // Global Parameters
-    public EditText fnameInput, lnameInput, emailInput, passwordInput, bdateInput, gnameInput, gphoneInput, addressInput;
-    public String   fname,  lname,  email, password,  bdate,  gname,  gphone,  address;
+    public EditText fnameInput, lnameInput, emailInput, passwordInput, bdateInput, gnameInput, gphoneInput, addressInput, doseInput;
+    public String   fname,  lname,  email, password,  bdate,  gname,  gphone,  address, dose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,7 @@ public class registerpage extends AppCompatActivity {
         gnameInput = findViewById(R.id.Gname);
         gphoneInput = findViewById(R.id.GPhone);
         addressInput = findViewById(R.id.Address);
+        doseInput = findViewById(R.id.Dose);
 
     }
 
@@ -67,10 +68,11 @@ public class registerpage extends AppCompatActivity {
         gname = gnameInput.getText().toString().trim();
         gphone = gphoneInput.getText().toString().trim();
         address = addressInput.getText().toString().trim();
+        dose = doseInput.getText().toString().trim();
 
         // Registration Process
         if (!fname.isEmpty() && !lname.isEmpty() && !email.isEmpty() && !password.isEmpty() &&
-                !bdate.isEmpty() && !gname.isEmpty() && !gphone.isEmpty() && !address.isEmpty()) {
+                !bdate.isEmpty() && !gname.isEmpty() && !gphone.isEmpty() && !address.isEmpty() && !dose.isEmpty()) {
 
             // Initialize Firebase
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
@@ -100,6 +102,7 @@ public class registerpage extends AppCompatActivity {
                         userData.put("guardianName", gname);
                         userData.put("guardianPhone", gphone);
                         userData.put("address", address);
+                        userData.put("dose", dose);
 
                         // Save data in Firebase
                         databaseReference.child(userId).setValue(userData)

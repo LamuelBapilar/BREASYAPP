@@ -21,12 +21,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
     // Handle permission result
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+    public void onRequestPermissionsResult(int requestCode, @NonNull String
+
+
+
+            [] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     // function to access sign up page
     public void gotoExperimental (View view){
-        Intent intent = new Intent(MainActivity.this, Homepage.class);
+        Intent intent = new Intent(MainActivity.this, Profilepage .class);
         startActivity(intent);
     }
 

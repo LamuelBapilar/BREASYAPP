@@ -1,26 +1,45 @@
 package com.example.breasyapp2;
 
-import android.graphics.Color;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class experiment extends AppCompatActivity {
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private TextView textWeather;
+    private final String Weather_KEY = "17561e030e960239b678acac686e1ab6"; // Replace with your OpenWeatherMap API key
+
+    String useremail, userfname, userlname, userbday, useraddress, usergphone, usergname, Weather, City, AirQuality ;
+    double Temperature, HeatIndex;
+    int Humidity, AQI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,67 +52,121 @@ public class experiment extends AppCompatActivity {
             return insets;
         });
 
-        // Get the LineChart view
-        LineChart lineChart = findViewById(R.id.lineChart);
+        textWeather = findViewById(R.id.textWeather);
 
-        // Data Points (Heart Rate BPM)
-        ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0f, 72));    // 0s
-        entries.add(new Entry(30f, 75));
-        entries.add(new Entry(60f, 78));   // 1 mins
-        entries.add(new Entry(90f, 80));
-        entries.add(new Entry(120f, 82));  // 2 mins
-        entries.add(new Entry(150f, 79));
-        entries.add(new Entry(180f, 85));  // 3 mins
-        entries.add(new Entry(210f, 88));
-        entries.add(new Entry(240f, 90));  // 4 mins
-        entries.add(new Entry(270f, 87));
-        entries.add(new Entry(300f, 85));  // 5 mins
-        entries.add(new Entry(330f, 88));
-        entries.add(new Entry(360f, 90));  // 6 mins
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        fetchLocation();
+    }
 
-        // Line DataSet Configuration
-        LineDataSet lineDataSet = new LineDataSet(entries, "Heart Rate (BPM)");
-        lineDataSet.setColor(getResources().getColor(android.R.color.holo_red_light));
-        lineDataSet.setLineWidth(2f);
-        lineDataSet.setCircleColor(getResources().getColor(android.R.color.holo_green_light));
-        lineDataSet.setCircleRadius(2f);
-        lineDataSet.setValueTextSize(7f);
+    private void fetchLocation() {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        getWeather(location.getLatitude(), location.getLongitude());
+                    } else {
+                        Toast.makeText(this, "Failed to get location", Toast.LENGTH_SHORT).show();
+                        fetchLocation();
+                    }
+                });
+    }
 
-        // Add the dataset to a list (in case you want to add more datasets later)
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(lineDataSet);
-        // Set LineData to chart
-        LineData lineData = new LineData(dataSets);
-        lineChart.setData(lineData);
-        // Chart Appearance Settings
-        lineChart.getDescription().setEnabled(false);
-        lineChart.setDrawGridBackground(false);
-        // X Axis Customization
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.TOP);
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new ValueFormatter() {
+    private void getWeather(double lat, double lon) {
+        OkHttpClient client = new OkHttpClient();
+
+        String weatherUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat +
+                "&lon=" + lon + "&units=metric&appid=" + Weather_KEY;
+
+        String airUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=" + lat +
+                "&lon=" + lon + "&appid=" + Weather_KEY;
+
+        Request weatherRequest = new Request.Builder().url(weatherUrl).build();
+        client.newCall(weatherRequest).enqueue(new Callback() {
             @Override
-            public String getFormattedValue(float value) {
-                return (int) value + "s"; // Format as seconds
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(experiment.this, "❌ Weather fetch failed.", Toast.LENGTH_SHORT).show());
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        String json = response.body().string();
+                        JSONObject obj = new JSONObject(json);
+
+                        String City = obj.getString("name");
+                        JSONObject main = obj.getJSONObject("main");
+                        Temperature = main.getDouble("temp");
+                        HeatIndex = main.getDouble("feels_like");
+                        Humidity = main.getInt("humidity");
+                        Weather = obj.getJSONArray("weather")
+                                .getJSONObject(0).getString("main");
+
+                        // Fetch AQI data now
+                        Request airRequest = new Request.Builder().url(airUrl).build();
+                        client.newCall(airRequest).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                runOnUiThread(() -> Toast.makeText(experiment.this, "🌡 Weather OK\n🌫 AQI fetch failed.", Toast.LENGTH_SHORT).show());
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response airResponse) throws IOException {
+                                if (airResponse.isSuccessful()) {
+                                    try {
+                                        String airJson = airResponse.body().string();
+                                        JSONObject airObj = new JSONObject(airJson);
+                                        AQI = airObj.getJSONArray("list")
+                                                .getJSONObject(0)
+                                                .getJSONObject("main")
+                                                .getInt("aqi");
+
+                                        String aqiStatus;
+                                        switch (AQI) {
+                                            case 1:
+                                                AirQuality = "Good ✅";
+                                                break;
+                                            case 2:
+                                                AirQuality = "Fair 🙂";
+                                                break;
+                                            case 3:
+                                                AirQuality = "Moderate 😐";
+                                                break;
+                                            case 4:
+                                                AirQuality = "Poor 😷";
+                                                break;
+                                            case 5:
+                                                AirQuality = "Very Poor 🚨";
+                                                break;
+                                            default:
+                                                AirQuality = "Unknown";
+                                        }
+
+                                        String display = "📍 Location: " + City + "\n" +
+                                                "🌡 Temp: " + Temperature + "°C\n" +
+                                                "🥵 Feels Like: " + HeatIndex + "°C\n" +
+                                                "💧 Humidity: " + Humidity + "%\n" +
+                                                "🌤 Weather: " + Weather + "\n" +
+                                                "🌫 Air Quality: " + AirQuality;
+
+                                        runOnUiThread(() -> textWeather.setText(display));
+
+                                    } catch (Exception e) {
+                                        runOnUiThread(() -> Toast.makeText(experiment.this, "\n⚠️ AQI parse error.", Toast.LENGTH_SHORT).show());
+                                    }
+                                }
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(experiment.this, "⚠️ Weather parse error.", Toast.LENGTH_SHORT).show());
+                    }
+                } else {
+                    runOnUiThread(() -> Toast.makeText(experiment.this, "🚫 Weather API error.", Toast.LENGTH_SHORT).show());
+                }
             }
         });
-        // Left Y Axis Customization
-        YAxis yAxis = lineChart.getAxisLeft();
-        yAxis.setAxisMinimum(60f); // Minimum for heart rate
-        // Right Y Axis as a Border
-        YAxis rightAxis = lineChart.getAxisRight();
-        rightAxis.setEnabled(true);               // Enable axis
-        rightAxis.setDrawAxisLine(true);          // Show axis line
-        rightAxis.setDrawLabels(false);           // Hide text
-        rightAxis.setDrawGridLines(false);        // No grid lines
-        rightAxis.setAxisLineColor(Color.GRAY);   // Optional styling
-        rightAxis.setAxisLineWidth(1f);           // Optional thickness
-
-        lineChart.invalidate(); // Refresh chart to apply changes
-
-
     }
+
 }
