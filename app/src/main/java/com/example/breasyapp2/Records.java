@@ -1,5 +1,9 @@
 package com.example.breasyapp2;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -47,6 +51,10 @@ public class Records extends AppCompatActivity {
     private ArrayList<Session> allSessions = new ArrayList<>();
     private SessionAdapter adapter;
 
+    //Breathing pattern Guide
+    private View breathcircle;
+    private AnimatorSet breathingSet;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +89,9 @@ public class Records extends AppCompatActivity {
         filterButtons = new Button[]{btnAll, btnToday, btnWeek, btnMonth, btnYear, btn2Y};
 
         // TextView Declarations
-        greet = findViewById(R.id.textView9);
+        greet = findViewById(R.id.greetings);
         greet.setText("Hello, " + userfname);
+        breathcircle = findViewById(R.id.breathCircle);
 
         // Line Chart declaration
         lineChart = findViewById(R.id.lineChart);
@@ -91,6 +100,7 @@ public class Records extends AppCompatActivity {
         // Setup functions
         loadSessionsIntoListView();
         setUpFilterButtons();
+        startBreathingAnimation();
     }
 
     private void loadSessionsIntoListView() {
@@ -237,7 +247,7 @@ public class Records extends AppCompatActivity {
     }
 
     private void setActiveFilterButton(Button button) {
-        button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#6854a4")));
+        button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#6DD19C")));
         button.setTextColor(Color.WHITE);
     }
 
@@ -335,6 +345,62 @@ public class Records extends AppCompatActivity {
             }
         });
     }
+
+    private void startBreathingAnimation() {
+        // Inhale animation (scale up)
+        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1f, 1.4f);
+        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1f, 1.4f);
+        scaleUpX.setDuration(3000);
+        scaleUpY.setDuration(3000);
+
+        // Exhale animation (scale down)
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1.4f, 1f);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1.4f, 1f);
+        scaleDownX.setDuration(4000);
+        scaleDownY.setDuration(4000);
+
+        // Set text to "Inhale" at the start of scale-up animation
+        scaleUpX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+
+        // Set text to "Exhale" at the start of scale-down animation
+        scaleDownX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+
+        // Group scale-up animations
+        AnimatorSet scaleUp = new AnimatorSet();
+        scaleUp.playTogether(scaleUpX, scaleUpY);
+
+        // Group scale-down animations
+        AnimatorSet scaleDown = new AnimatorSet();
+        scaleDown.playTogether(scaleDownX, scaleDownY);
+
+        // Full breathing animation set (inhale then exhale)
+        breathingSet = new AnimatorSet();
+        breathingSet.playSequentially(scaleUp, scaleDown);  // Play scale up, then scale down
+        breathingSet.setStartDelay(500); // Small pause before start
+
+        // Loop the animation manually when it ends
+        breathingSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (breathingSet != null) {
+                    breathingSet.start(); // Restart the animation loop
+                }
+            }
+        });
+
+        // Start the breathing animation
+        breathingSet.start();
+    } // start breathing guide circle
 
 
 }

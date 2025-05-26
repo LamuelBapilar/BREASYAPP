@@ -5,118 +5,32 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Mint_Background"
     tools:context=".Homepage">
 
-
-    <View
-        android:id="@+id/breathoutline"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="592dp"
-        android:background="@drawable/breathoutline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.692"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-
-    <TextView
-        android:id="@+id/greetings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Hello, Lamuel!"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.217"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
-        android:id="@+id/imageView11"
-        android:layout_width="56dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="283dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="684dp"
-        android:onClick="Profile"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/imageView21"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="528dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.875"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.156"
-        app:srcCompat="@drawable/user" />
+        app:srcCompat="@drawable/breathpattern" />
 
     <ImageView
-        android:id="@+id/imageView13"
-        android:layout_width="37dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="320dp"
-        android:layout_marginBottom="693dp"
-        android:clickable="true"
-        android:onClick="Logout"
+        android:id="@+id/imageView10"
+        android:layout_width="308dp"
+        android:layout_height="308dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginBottom="388dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/back"
-        app:tint="@color/Secondary_Text" />
-
-    <Button
-        android:id="@+id/monitor_Button"
-        android:layout_width="163dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="86dp"
-        android:layout_marginEnd="184dp"
-        android:layout_marginBottom="659dp"
-        android:text="Monitor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/record_Button"
-        android:layout_width="163dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="187dp"
-        android:layout_marginTop="86dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginBottom="659dp"
-        android:backgroundTint="#C8C8C8"
-        android:onClick="Records"
-        android:text="Records"
-        android:textColor="@color/Primary_Text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="32dp"
-        android:drawableStart="@android:drawable/stat_sys_data_bluetooth"
-        android:drawableTint="@color/Primary_Text"
-        app:layout_constraintBottom_toTopOf="@+id/record_Button"
-        app:layout_constraintEnd_toStartOf="@+id/imageView11"
-        app:layout_constraintHorizontal_bias="0.861"
-        app:layout_constraintStart_toEndOf="@+id/greetings"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:srcCompat="@drawable/breathoutline" />
 
     <ImageView
         android:id="@+id/imageView17"
@@ -125,217 +39,315 @@
         app:srcCompat="@drawable/breathpattern"
         tools:layout_editor_absoluteY="547dp" />
 
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="475dp"
-        android:layout_marginEnd="266dp"
-        android:layout_marginBottom="293dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Temperature"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView25"
-        android:layout_width="82dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="498dp"
-        android:layout_marginEnd="269dp"
-        android:layout_marginBottom="211dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/circle_design_2" />
-
-    <ImageView
-        android:id="@+id/imageView28"
-        android:layout_width="82dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="498dp"
-        android:layout_marginEnd="184dp"
-        android:layout_marginBottom="211dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/circle_design_2" />
-
-    <ImageView
-        android:id="@+id/imageView30"
-        android:layout_width="82dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="187dp"
-        android:layout_marginTop="498dp"
-        android:layout_marginEnd="94dp"
-        android:layout_marginBottom="211dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/circle_design_2" />
-
-    <ImageView
-        android:id="@+id/imageView31"
-        android:layout_width="82dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="273dp"
-        android:layout_marginTop="498dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="211dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/circle_design_2" />
-
-    <TextView
-        android:id="@+id/textView19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="109dp"
-        android:layout_marginTop="475dp"
-        android:layout_marginEnd="194dp"
-        android:layout_marginBottom="293dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Humidity"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/textView20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="475dp"
-        android:layout_marginEnd="108dp"
-        android:layout_marginBottom="293dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Weather"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="278dp"
-        android:layout_marginTop="475dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="293dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Air Quality"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/lineChart"
-        android:layout_width="338dp"
-        android:layout_height="206dp"
-        android:layout_marginBottom="431dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.897" />
 
     <View
         android:id="@+id/breathCircle"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_centerInParent="true"
         android:background="@drawable/breathpattern"
-        app:layout_constraintBottom_toBottomOf="@+id/breathoutline"
-        app:layout_constraintEnd_toEndOf="@+id/breathoutline"
-        app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="@+id/breathoutline"
-        app:layout_constraintTop_toTopOf="@+id/breathoutline" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageView10"
+        app:layout_constraintEnd_toEndOf="@+id/imageView10"
+        app:layout_constraintStart_toStartOf="@+id/imageView10"
+        app:layout_constraintTop_toTopOf="@+id/imageView10" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="83dp"
+        android:layout_marginBottom="185dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Session"
+        android:textColor="@color/background"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/breathCircle"
+        app:layout_constraintEnd_toEndOf="@+id/breathCircle"
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="@+id/breathCircle"
+        app:layout_constraintTop_toTopOf="@+id/breathCircle"
+        app:layout_constraintVertical_bias="0.233" />
+
+    <TextView
+        android:id="@+id/Session"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="00:00"
+        android:textColor="@color/background"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="@+id/breathCircle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/breathCircle"
+        app:layout_constraintVertical_bias="0.329" />
+
+    <TextView
+        android:id="@+id/breathGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Idle"
+        android:textColor="@color/background"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/breathCircle"
+        app:layout_constraintEnd_toEndOf="@+id/breathCircle"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="@+id/breathCircle"
+        app:layout_constraintTop_toTopOf="@+id/breathCircle"
+        app:layout_constraintVertical_bias="0.582" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="sendmyText"
+        app:backgroundTint="@android:color/transparent"
+        app:elevation="0dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.314"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.331"
+        app:rippleColor="@android:color/transparent"
+        app:srcCompat="@android:drawable/ic_dialog_email"
+        app:tint="@color/background" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="saveSession"
+        app:backgroundTint="@android:color/transparent"
+        app:elevation="0dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.681"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.331"
+        app:rippleColor="@android:color/transparent"
+        app:srcCompat="@drawable/save"
+        app:tint="@color/background" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="239dp"
+        android:layout_marginEnd="153dp"
+        android:layout_marginBottom="481dp"
+        android:clickable="true"
+        android:onClick="resetSession"
+        app:backgroundTint="@android:color/transparent"
+        app:elevation="0dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rippleColor="@android:color/transparent"
+        app:srcCompat="@drawable/reset"
+        app:tint="@color/background" />
+
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="37dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="256dp"
+        android:clickable="true"
+        android:onClick="Logout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView19"
+        app:layout_constraintHorizontal_bias="0.457"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023"
+        app:srcCompat="@drawable/back"
+        app:tint="@color/Primary_Text" />
+
+    <ImageView
+        android:id="@+id/imageView19"
+        android:layout_width="44dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="305dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="723dp"
+        android:onClick="Profile"
+        android:tint="@color/Primary_Text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/profile" />
+
+    <TextView
+        android:id="@+id/greetings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="120dp"
+        android:fontFamily="@font/baloo_bhai"
+        android:text="Hello, Lamuel!"
+        android:textColor="@color/Primary_Text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView19"
+        app:layout_constraintStart_toEndOf="@+id/imageView13"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.02" />
+
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="724dp"
+        android:drawableStart="@android:drawable/stat_sys_data_bluetooth"
+        android:drawableTint="@color/Primary_Text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView19"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toEndOf="@+id/greetings"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView20"
-        android:layout_width="121dp"
-        android:layout_height="104dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginTop="368dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginBottom="335dp"
+        android:layout_width="163dp"
+        android:layout_height="101dp"
+
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="397dp"
+        android:layout_marginEnd="202dp"
+        android:layout_marginBottom="309dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.541"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.698"
+        app:srcCompat="@drawable/status_design_costumized" />
+
+    <ImageView
+        android:id="@+id/imageView23"
+        android:layout_width="163dp"
+        android:layout_height="101dp"
+
+        android:layout_marginStart="202dp"
+        android:layout_marginTop="394dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="312dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.634"
         app:srcCompat="@drawable/status_design_costumized" />
+
+
+    <ImageView
+        android:id="@+id/imageView25"
+        android:layout_width="335dp"
+        android:layout_height="231dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="515dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.466"
+        app:srcCompat="@drawable/status_design_costumized" />
+
+    <Button
+        android:id="@+id/monitor_Button"
+        android:layout_width="163dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="467dp"
+        android:layout_marginEnd="191dp"
+        android:layout_marginBottom="239dp"
+        android:backgroundTint="@color/Primary_Mint_Green"
+        android:text="Monitor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.531" />
+
+    <Button
+        android:id="@+id/record_Button"
+        android:layout_width="163dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="190dp"
+        android:layout_marginTop="467dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="239dp"
+        android:backgroundTint="#C8C8C8"
+        android:onClick="Records"
+        android:text="Records"
+        android:textColor="@color/Primary_Text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.531" />
 
     <ImageView
         android:id="@+id/imageView26"
-        android:layout_width="121dp"
-        android:layout_height="104dp"
-        android:layout_marginStart="256dp"
-        android:layout_marginTop="368dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="335dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/status_design_costumized" />
+        android:layout_width="51dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginBottom="44dp"
+        android:tint="@color/Primary_Text"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView20"
+        app:layout_constraintEnd_toEndOf="@+id/imageView20"
+        app:layout_constraintHorizontal_bias="0.238"
+        app:layout_constraintStart_toStartOf="@+id/imageView20"
+        app:layout_constraintTop_toTopOf="@+id/imageView20"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/battery" />
 
     <ImageView
         android:id="@+id/imageView27"
-        android:layout_width="121dp"
-        android:layout_height="104dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="368dp"
-        android:layout_marginEnd="257dp"
-        android:layout_marginBottom="335dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/status_design_costumized" />
-
-
-    <ImageView
-        android:id="@+id/imageView21"
-        android:layout_width="54dp"
-        android:layout_height="50dp"
+        android:layout_width="43dp"
+        android:layout_height="58dp"
         android:layout_marginStart="6dp"
-        android:layout_marginEnd="61dp"
-        android:layout_marginBottom="54dp"
-        android:tint="@color/background"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView26"
-        app:layout_constraintEnd_toEndOf="@+id/imageView26"
-        app:layout_constraintStart_toStartOf="@+id/imageView26"
-        app:layout_constraintTop_toTopOf="@+id/imageView26"
-        app:srcCompat="@drawable/oxygen_level" />
+        android:layout_marginEnd="51dp"
+        android:layout_marginBottom="42dp"
+        android:tint="@color/Primary_Text"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView23"
+        app:layout_constraintEnd_toEndOf="@+id/imageView23"
+        app:layout_constraintHorizontal_bias="0.277"
+        app:layout_constraintStart_toStartOf="@+id/imageView23"
+        app:layout_constraintTop_toTopOf="@+id/imageView23"
+        app:srcCompat="@drawable/heart_beat" />
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="62dp"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="63dp"
         android:fontFamily="@font/baloo_bhai"
-        android:text="BPM"
-        android:textColor="@color/background"
+        android:text="Battery"
+        android:textColor="@color/Primary_Text"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView20"
         app:layout_constraintEnd_toEndOf="@+id/imageView20"
@@ -346,258 +358,84 @@
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="59dp"
         android:fontFamily="@font/baloo_bhai"
-        android:text="Battery"
-        android:textColor="@color/background"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView27"
-        app:layout_constraintEnd_toStartOf="@+id/imageView20"
-        app:layout_constraintHorizontal_bias="0.773"
-        app:layout_constraintStart_toStartOf="@+id/imageView27"
-        app:layout_constraintTop_toTopOf="@+id/imageView27"
-        app:layout_constraintVertical_bias="0.144" />
-
-    <TextView
-        android:id="@+id/BPM"
-        android:layout_width="88dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="51dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:gravity="center"
-        android:text="00"
-        android:textColor="@color/background"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView20"
-        app:layout_constraintEnd_toEndOf="@+id/imageView20"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/imageView20"
-        app:layout_constraintTop_toTopOf="@+id/imageView20"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Session"
+        android:text="BPM"
         android:textColor="@color/Primary_Text"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/breathCircle"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="@+id/breathCircle"
-        app:layout_constraintTop_toTopOf="@+id/breathCircle" />
-
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="60dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Sp02"
-        android:textColor="@color/background"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView26"
-        app:layout_constraintEnd_toEndOf="@+id/imageView26"
-        app:layout_constraintStart_toStartOf="@+id/imageView26"
-        app:layout_constraintTop_toTopOf="@+id/imageView26" />
-
-    <TextView
-        android:id="@+id/Session"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="00:00"
-        android:textColor="@color/Primary_Text"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="@+id/breathCircle"
-        app:layout_constraintEnd_toEndOf="@+id/breathCircle"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="@+id/breathCircle"
-        app:layout_constraintTop_toTopOf="@+id/breathCircle"
-        app:layout_constraintVertical_bias="0.184" />
-
-    <TextView
-        android:id="@+id/Oxygen"
-        android:layout_width="100dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="51dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:gravity="center"
-        android:text="00%"
-        android:textColor="@color/background"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView26"
-        app:layout_constraintEnd_toEndOf="@+id/imageView26"
-        app:layout_constraintStart_toStartOf="@+id/imageView26"
-        app:layout_constraintTop_toTopOf="@+id/imageView26" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageView23"
+        app:layout_constraintEnd_toEndOf="@+id/imageView23"
+        app:layout_constraintHorizontal_bias="0.595"
+        app:layout_constraintStart_toStartOf="@+id/imageView23"
+        app:layout_constraintTop_toTopOf="@+id/imageView23"
+        app:layout_constraintVertical_bias="0.857" />
 
     <TextView
         android:id="@+id/battery"
-        android:layout_width="100dp"
-        android:layout_height="43dp"
-        android:fontFamily="@font/baloo_bhai"
-        android:gravity="center"
-        android:text="00%"
-        android:textColor="@color/background"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView27"
-        app:layout_constraintEnd_toStartOf="@+id/imageView20"
-        app:layout_constraintHorizontal_bias="0.571"
-        app:layout_constraintStart_toStartOf="@+id/imageView27"
-        app:layout_constraintTop_toTopOf="@+id/imageView27"
-        app:layout_constraintVertical_bias="0.819" />
-
-
-    <TextView
-        android:id="@+id/breathGuide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="Idle"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/breathCircle"
-        app:layout_constraintEnd_toEndOf="@+id/breathCircle"
-        app:layout_constraintHorizontal_bias="0.513"
-        app:layout_constraintStart_toStartOf="@+id/breathCircle"
-        app:layout_constraintTop_toTopOf="@+id/breathCircle"
-        app:layout_constraintVertical_bias="0.353" />
-
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="51dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="5dp"
-        android:tint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView27"
-        app:layout_constraintEnd_toStartOf="@+id/imageView20"
-        app:layout_constraintHorizontal_bias="0.028"
-        app:layout_constraintStart_toStartOf="@+id/imageView27"
-        app:layout_constraintTop_toTopOf="@+id/imageView27"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/battery" />
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="85dp"
-        android:layout_marginTop="728dp"
-        android:layout_marginEnd="222dp"
-        android:layout_marginBottom="7dp"
-        android:clickable="true"
-        android:onClick="sendmyText"
-        app:backgroundTint="@color/Secondary_Yellow"
-        app:elevation="0dp"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:rippleColor="@android:color/transparent"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        app:tint="@color/Primary_Text" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="233dp"
-        android:layout_marginTop="728dp"
-        android:layout_marginEnd="74dp"
-        android:layout_marginBottom="7dp"
-        android:clickable="true"
-        android:onClick="saveSession"
-        app:backgroundTint="@color/Secondary_Yellow"
-        app:elevation="0dp"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:rippleColor="@android:color/transparent"
-        app:srcCompat="@drawable/save"
-        app:tint="@color/Primary_Text" />
-
-    <TextView
-        android:id="@+id/tempview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginEnd="29dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="14dp"
         android:fontFamily="@font/baloo_bhai"
-        android:text="N/A"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView25"
-        app:layout_constraintEnd_toEndOf="@+id/imageView25"
-        app:layout_constraintStart_toStartOf="@+id/imageView25"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+        android:text="00%"
+        android:textColor="@color/Primary_Text"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView20"
+        app:layout_constraintEnd_toEndOf="@+id/imageView20"
+        app:layout_constraintStart_toStartOf="@+id/imageView20"
+        app:layout_constraintTop_toTopOf="@+id/imageView20" />
 
     <TextView
-        android:id="@+id/humview"
+        android:id="@+id/bpm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="31dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="12dp"
         android:fontFamily="@font/baloo_bhai"
-        android:text="N/A"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView28"
-        app:layout_constraintEnd_toEndOf="@+id/imageView28"
-        app:layout_constraintStart_toStartOf="@+id/imageView28"
-        app:layout_constraintTop_toTopOf="@+id/imageView28" />
+        android:text="00"
+        android:textColor="@color/Primary_Text"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView23"
+        app:layout_constraintEnd_toEndOf="@+id/imageView23"
+        app:layout_constraintStart_toStartOf="@+id/imageView23"
+        app:layout_constraintTop_toTopOf="@+id/imageView23" />
+
 
     <TextView
-        android:id="@+id/airview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/baloo_bhai"
-        android:text="N/A"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView31"
-        app:layout_constraintEnd_toEndOf="@+id/imageView31"
-        app:layout_constraintStart_toStartOf="@+id/imageView31"
-        app:layout_constraintTop_toTopOf="@+id/imageView31" />
-
-    <TextView
-        android:id="@+id/wethview"
+        android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/baloo_bhai"
-        android:text="N/A"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView30"
-        app:layout_constraintEnd_toEndOf="@+id/imageView30"
-        app:layout_constraintStart_toStartOf="@+id/imageView30"
-        app:layout_constraintTop_toTopOf="@+id/imageView30"
-        app:layout_constraintVertical_bias="0.507" />
-
-    <ImageView
-        android:id="@+id/imageView22"
-        android:layout_width="36dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="138dp"
-        android:layout_marginTop="367dp"
-        android:layout_marginEnd="191dp"
-        android:layout_marginBottom="385dp"
-        android:tint="@color/white"
+        android:text="BPM Monitor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/heart_beat" />
+        app:layout_constraintVertical_bias="0.717" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="300dp"
+        android:layout_height="180dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="17dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView25"
+        app:layout_constraintEnd_toEndOf="@+id/imageView25"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView25"
+        app:layout_constraintTop_toTopOf="@+id/imageView25"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

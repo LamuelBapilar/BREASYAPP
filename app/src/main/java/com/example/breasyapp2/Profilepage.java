@@ -24,14 +24,15 @@ import java.security.PrivateKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Profilepage extends AppCompatActivity {
 
     private String useremail, userfname, userlname, userbday, useraddress, usergphone, usergname, userdose;
-    private EditText OldPass, NewPass, RenewPass, NewDose;
-    private Button passbutton, dosebutton;
+    private EditText OldPass, NewPass, RenewPass, NewDose, NewGnum;
     private TextView Allsessions, Lastsession, username, usergmail;
 
     @Override
@@ -69,12 +70,9 @@ public class Profilepage extends AppCompatActivity {
         NewPass = findViewById(R.id.newpass);
         RenewPass = findViewById(R.id.renewpass);
         NewDose = findViewById(R.id.newdose);
+        NewGnum = findViewById(R.id.newgnum);
         NewDose.setText(userdose); //put existing dose
-
-        // Button Declarations
-        passbutton = findViewById(R.id.passbutton);
-        dosebutton = findViewById(R.id.dosebutton);
-
+        NewGnum.setText(usergphone); //put existing dose
         //Startup Functions
         SessionStatus();
 
@@ -187,27 +185,33 @@ public class Profilepage extends AppCompatActivity {
         });
     }
 
-    public void ChangeDose(View view) {
+    public void ChangeDoseAndGPhone(View view) {
         String dose = NewDose.getText().toString().trim();
-        String userKey = useremail.replace(".", "_"); // convert email to Firebase-safe key
+        String gnum = NewGnum.getText().toString().trim();
+        String userKey = useremail.replace(".", "_"); // Firebase-safe key
 
-        if (!dose.isEmpty()) {
-            FirebaseDatabase.getInstance()
+        if (!dose.isEmpty() && !gnum.isEmpty()) {
+            DatabaseReference userRef = FirebaseDatabase.getInstance()
                     .getReference("users")
-                    .child(userKey)
-                    .child("dose")
-                    .setValue(dose)
+                    .child(userKey);
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("dose", dose);
+            updates.put("guardianPhone", gnum);
+
+            userRef.updateChildren(updates)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Dose updated, logging Off", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Dose and Guardian Phone updated. Logging off...", Toast.LENGTH_SHORT).show();
                         Logout();
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
                     });
         } else {
-            Toast.makeText(this, "Please enter a dose", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter both Dose and Guardian Number", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     public void Logout(){
         SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -222,9 +226,6 @@ public class Profilepage extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     } // logout to login page
-
-
-
 
 
 }

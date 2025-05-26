@@ -37,20 +37,24 @@
         android:id="@+id/viewButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="7dp"
         android:layout_weight="0.5"
-        android:backgroundTint="#4CAF50"
+        android:backgroundTint="@color/Primary_Mint_Green"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
         android:text="View"
-        android:textSize="12sp"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
-        android:backgroundTint="#F44336"
+        android:backgroundTint="@color/Secondary_Mint_Green"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
         android:text="Delete"
-        android:textSize="10sp"
-        android:textColor="#FFFFFF" />
+        android:textColor="@color/Primary_Text"
+        android:textSize="12sp" />
 </LinearLayout>

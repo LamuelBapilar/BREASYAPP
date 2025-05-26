@@ -3,13 +3,16 @@ package com.example.breasyapp2;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -102,6 +105,7 @@ public class Homepage extends AppCompatActivity {
     //Breathing pattern Guide
     private View breathcircle;
     private AnimatorSet breathingSet;
+    private ValueAnimator colorAnimator; // Add this to your class variables
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,15 +133,15 @@ public class Homepage extends AppCompatActivity {
         useremail = prefs.getString("useremail", null); // set retrieve email
 
         // TextView Declarations
-        BPM = findViewById(R.id.BPM);
-        Oxygen = findViewById(R.id.Oxygen);
+        BPM = findViewById(R.id.bpm);
+       // Oxygen = findViewById(R.id.Oxygen);
         Session = findViewById(R.id.Session);
         Battery = findViewById(R.id.battery);
         greetings = findViewById(R.id.greetings);
-        tempview = findViewById(R.id.tempview);
-        humview = findViewById(R.id.humview);
-        wethview = findViewById(R.id.wethview);
-        airview = findViewById(R.id.airview);
+        // tempview = findViewById(R.id.tempview);
+        // humview = findViewById(R.id.humview);
+        // wethview = findViewById(R.id.wethview);
+        // airview = findViewById(R.id.airview);
 
         // Switch Declarations
         BTswitch = findViewById(R.id.switch1);
@@ -145,6 +149,7 @@ public class Homepage extends AppCompatActivity {
             if (isChecked) {
                 checkBluetoothStatus();
                 connectToESP32();
+                demoBTstats();
             } else {
                 Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
                 isRecordingBPM = false;
@@ -171,7 +176,7 @@ public class Homepage extends AppCompatActivity {
         }); //BT switch
 
         // Location Declaration
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        // fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         //Breathing pattern guide Declaration
         breathcircle = findViewById(R.id.breathCircle);
@@ -183,7 +188,8 @@ public class Homepage extends AppCompatActivity {
         demoBTstats();
         retrieveuserdata(); //retrieve user data
         handleDemoLineGraph();
-        fetchLocation();
+        checkbtconnection();
+        // fetchLocation();
 
     }
 
@@ -246,12 +252,39 @@ public class Homepage extends AppCompatActivity {
                 updateLineChart();
 
                 // Continue every 1 seconds
-                heartRateHandler.postDelayed(this, 1000);
+                heartRateHandler.postDelayed(this, 1270);
             }
         };
 
         heartRateHandler.post(heartRateRunnable);
     } // to start BPM monitor
+
+    public void resetSession (View view) {
+
+        List<HeartRateRecord> sessionRecords = new ArrayList<>();
+        for (Entry entry : entries) {
+            int time = (int) entry.getX();
+            int bpm = (int) entry.getY();
+            sessionRecords.add(new HeartRateRecord(time, bpm));
+        }
+
+        // Check if sessionRecords is empty (no BPM data)
+        if (sessionRecords.isEmpty()) {
+            Toast.makeText(this, "No BPM data to reset", Toast.LENGTH_SHORT).show();
+            return; // Exit the method if there's no data to save
+        }
+
+        if (isRecordingBPM) {
+            Toast.makeText(this, "Session on progress", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(this, getClass());
+            finish();
+            startActivity(intent);
+            Toast.makeText(this, "Session reset", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
 
     public void saveSession(View view) {
         DatabaseReference recordsRef = FirebaseDatabase.getInstance().getReference("Records");
@@ -280,22 +313,22 @@ public class Homepage extends AppCompatActivity {
             sessionData.put("bpmRecords", sessionRecords);
 
             // Include weather data
-            Map<String, Object> weatherInfo = new HashMap<>();
-            weatherInfo.put("city", City);
-            weatherInfo.put("temperature", Temperature);
-            weatherInfo.put("feels_like", HeatIndex);
-            weatherInfo.put("humidity", Humidity);
-            weatherInfo.put("weather_condition", Weather);
-            weatherInfo.put("air_quality", AirQuality);
+            //Map<String, Object> weatherInfo = new HashMap<>();
+            //weatherInfo.put("city", City);
+            // weatherInfo.put("temperature", Temperature);
+            //  weatherInfo.put("feels_like", HeatIndex);
+            // weatherInfo.put("humidity", Humidity);
+            //  weatherInfo.put("weather_condition", Weather);
+            // weatherInfo.put("air_quality", AirQuality);
 
-            sessionData.put("weather", weatherInfo);
+            // sessionData.put("weather", weatherInfo);
 
             // Save to Firebase and handle success/failure
             recordsRef.child(userchild).child(sessionKey).setValue(sessionData)
                     .addOnSuccessListener(aVoid -> {
-                        entries.clear(); // Reset BPM entries
-                        timeCounter = 0;
-                        handleDemoLineGraph(); // Refresh the line chart
+                        Intent intent = new Intent(this, getClass());
+                        finish();
+                        startActivity(intent);
                         Toast.makeText(this, "Session saved", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e ->
@@ -407,26 +440,24 @@ public class Homepage extends AppCompatActivity {
 
                         if (parts.length == 4) {
                             String bpmValue = parts[0];
-                            String oxygenValue = parts[1];
+                            String batteryValue = parts[1];
                             String runningStatus = parts[2];
-                            String toggleTime = parts[3];
+                            String SessionTime = parts[3];
 
-                            BPM.setText(bpmValue);          // BPM TextView
-                            Oxygen.setText(oxygenValue + "%");    // Oxygen TextView
-
-                           randomOxygen = Integer.parseInt(oxygenValue);
-                           randomBPM = Integer.parseInt(bpmValue);
-                           isRecordingBPM = Boolean.parseBoolean(runningStatus);
-                           ObserveisRecordingBPM.set(isRecordingBPM); //set observed isRecordingBPM
+                            BPM.setText(bpmValue); // BPM TextView
+                            Battery.setText(batteryValue + "%"); // Battery TextView
+                            Session.setText(SessionTime); //Session Textview
+                            randomBPM = Integer.parseInt(bpmValue);
+                            isRecordingBPM = Boolean.parseBoolean(runningStatus);
+                            ObserveisRecordingBPM.set(isRecordingBPM); //set observed isRecordingBPM
                         }
-
 
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                handler.postDelayed(this, 500); // Run again every 1s
+                handler.postDelayed(this, 200); // Run again every 0.5s
             }
         };
         handler.post(runnable);
@@ -488,6 +519,7 @@ public class Homepage extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Connected to ESP32", Toast.LENGTH_SHORT).show();
                             BTswitch.setChecked(true);
+                            sendDoseAndPhone(btSocket, userdose, usergphone);
                         });
 
                     } catch (IOException | InterruptedException e) {
@@ -612,6 +644,139 @@ public class Homepage extends AppCompatActivity {
         }
     } // send text to guardian
 
+    private void startBreathingAnimation() {
+        int colorStart = Color.parseColor("#6DD19C");
+        int colorEnd = Color.parseColor("#f6cb85");
+
+        // INHALE: scale up + color transition
+        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1f, 1.4f);
+        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1f, 1.4f);
+        scaleUpX.setDuration(3000);
+        scaleUpY.setDuration(3000);
+
+        ValueAnimator inhaleColor = ValueAnimator.ofArgb(colorStart, colorEnd);
+        inhaleColor.setDuration(3000);
+        inhaleColor.addUpdateListener(animation -> {
+            int color = (int) animation.getAnimatedValue();
+            breathcircle.setBackgroundTintList(ColorStateList.valueOf(color));
+        });
+
+        AnimatorSet inhaleSet = new AnimatorSet();
+        inhaleSet.playTogether(scaleUpX, scaleUpY, inhaleColor);
+        inhaleSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                breathTextView.setText("Inhale");
+            }
+        });
+
+        // EXHALE: scale down + color reverse
+        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1.4f, 1f);
+        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1.4f, 1f);
+        scaleDownX.setDuration(4000);
+        scaleDownY.setDuration(4000);
+
+        ValueAnimator exhaleColor = ValueAnimator.ofArgb(colorEnd, colorStart);
+        exhaleColor.setDuration(4000);
+        exhaleColor.addUpdateListener(animation -> {
+            int color = (int) animation.getAnimatedValue();
+            breathcircle.setBackgroundTintList(ColorStateList.valueOf(color));
+        });
+
+        AnimatorSet exhaleSet = new AnimatorSet();
+        exhaleSet.playTogether(scaleDownX, scaleDownY, exhaleColor);
+        exhaleSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                breathTextView.setText("Exhale");
+            }
+        });
+
+        // LOOP: inhale → exhale
+        breathingSet = new AnimatorSet();
+        breathingSet.playSequentially(inhaleSet, exhaleSet);
+        breathingSet.setStartDelay(500);
+
+        breathingSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (breathingSet != null) {
+                    breathingSet.start(); // Loop
+                }
+            }
+        });
+
+        breathingSet.start();
+    }// start breathing guide circle
+
+    private void stopBreathingAnimation() {
+        if (breathingSet != null) {
+            breathingSet.removeAllListeners();
+            if (breathingSet.isRunning()) {
+                breathingSet.cancel();
+            }
+            breathingSet = null;
+        }
+
+        if (colorAnimator != null) {
+            colorAnimator.cancel();
+            colorAnimator = null;
+        }
+
+        // Reset breathcircle to normal scale
+        ObjectAnimator resetX = ObjectAnimator.ofFloat(breathcircle, "scaleX", breathcircle.getScaleX(), 1f);
+        ObjectAnimator resetY = ObjectAnimator.ofFloat(breathcircle, "scaleY", breathcircle.getScaleY(), 1f);
+        resetX.setDuration(500);
+        resetY.setDuration(500);
+
+        AnimatorSet resetSet = new AnimatorSet();
+        resetSet.playTogether(resetX, resetY);
+        resetSet.start();
+
+        // Reset text and color
+        breathTextView.setText("Idle");
+        breathcircle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#6DD19C")));
+    } // stop breathing guide circle
+
+    public void checkbtconnection() {
+        final Handler handler = new Handler();
+        Runnable pingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Only attempt to ping if connected
+                if (isBTconnected) {
+                    try {
+                        if (btSocket != null && btSocket.isConnected()) {
+                            // Send a ping message to the ESP32
+                            outputStream.write("ping".getBytes());
+                        } else {
+                            // If socket is no longer connected
+                            isBTconnected = false;
+                            isRecordingBPM = false;
+
+                        }
+                    } catch (IOException e) {
+                        // Handle write failure and reconnect
+                        Log.e("BT", "Ping failed", e);
+                        isBTconnected = false;
+                        isRecordingBPM = false;
+
+                    }
+                } else {
+                    // If not connected
+                    isBTconnected = false;
+                    isRecordingBPM = false;
+
+                }
+
+                handler.postDelayed(this, 2000); // Schedule next ping in 2 seconds
+            }
+        };
+        handler.post(pingRunnable); // Start the ping loop
+    }   // Check Bluetooth connection every 5 seconds (Buggy)
+
+    //no longer in use functions
+
     private void fetchLocation() {
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, location -> {
@@ -727,88 +892,6 @@ public class Homepage extends AppCompatActivity {
         });
     } // gather weather data from location given
 
-    private void startBreathingAnimation() {
-        // Inhale animation (scale up)
-        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1f, 1.4f);
-        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1f, 1.4f);
-        scaleUpX.setDuration(3000);
-        scaleUpY.setDuration(3000);
-
-        // Exhale animation (scale down)
-        ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1.4f, 1f);
-        ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1.4f, 1f);
-        scaleDownX.setDuration(4000);
-        scaleDownY.setDuration(4000);
-
-        // Set text to "Inhale" at the start of scale-up animation
-        scaleUpX.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                breathTextView.setText("Inhale");  // Change the text to "Inhale"
-            }
-        });
-
-        // Set text to "Exhale" at the start of scale-down animation
-        scaleDownX.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                breathTextView.setText("Exhale");  // Change the text to "Exhale"
-            }
-        });
-
-        // Group scale-up animations
-        AnimatorSet scaleUp = new AnimatorSet();
-        scaleUp.playTogether(scaleUpX, scaleUpY);
-
-        // Group scale-down animations
-        AnimatorSet scaleDown = new AnimatorSet();
-        scaleDown.playTogether(scaleDownX, scaleDownY);
-
-        // Full breathing animation set (inhale then exhale)
-        breathingSet = new AnimatorSet();
-        breathingSet.playSequentially(scaleUp, scaleDown);  // Play scale up, then scale down
-        breathingSet.setStartDelay(500); // Small pause before start
-
-        // Loop the animation manually when it ends
-        breathingSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (breathingSet != null) {
-                    breathingSet.start(); // Restart the animation loop
-                }
-            }
-        });
-
-        // Start the breathing animation
-        breathingSet.start();
-    } // start breathing guide circle
-
-    private void stopBreathingAnimation() {
-        if (breathingSet != null) {
-            breathingSet.removeAllListeners();
-            if (breathingSet.isRunning()) {
-                breathingSet.cancel();
-            }
-            breathingSet = null;
-        }
-
-        // Animate the circle back to scale 1f
-        ObjectAnimator resetX = ObjectAnimator.ofFloat(breathcircle, "scaleX", breathcircle.getScaleX(), 1f);
-        ObjectAnimator resetY = ObjectAnimator.ofFloat(breathcircle, "scaleY", breathcircle.getScaleY(), 1f);
-
-        resetX.setDuration(500);
-        resetY.setDuration(500);
-
-        AnimatorSet resetSet = new AnimatorSet();
-        resetSet.playTogether(resetX, resetY);
-        resetSet.start();
-        breathTextView.setText("Idle");
-    } // stop breathing guide circle
-
-    //no longer in use functions
-
     private void connectToESP32old() {
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         Thread connectionThread = new Thread(() -> {
@@ -902,41 +985,6 @@ public class Homepage extends AppCompatActivity {
         handler.post(runnable);
     } // demo BPM and Oxygen
 
-    public void checkbtconnection() {
-        final Handler handler = new Handler();
-        Runnable pingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Only attempt to ping if connected
-                if (isBTconnected) {
-                    try {
-                        if (btSocket != null && btSocket.isConnected()) {
-                            // Send a ping message to the ESP32
-                            outputStream.write("ping".getBytes());
-                        } else {
-                            // If socket is no longer connected, attempt reconnection
-                            isBTconnected = false;
-                            runOnUiThread(() -> Toast.makeText(Homepage.this, "Bluetooth lost, reconnecting...", Toast.LENGTH_SHORT).show());
-                            connectToESP32old();
-                        }
-                    } catch (IOException e) {
-                        // Handle write failure and reconnect
-                        Log.e("BT", "Ping failed", e);
-                        isBTconnected = false;
-                        connectToESP32old(); // Try reconnecting
-                    }
-                } else {
-                    // If not connected, try connecting
-                    runOnUiThread(() -> Toast.makeText(Homepage.this, "Not connected, attempting to connect...", Toast.LENGTH_SHORT).show());
-                    connectToESP32old();
-                }
-
-                handler.postDelayed(this, 5000); // Schedule next ping in 5 seconds
-            }
-        };
-        handler.post(pingRunnable); // Start the ping loop
-    }   // Check Bluetooth connection every 5 seconds (Buggy)
-
     public void continueHeartRateRecording(View view) {
 
         if (!isRecordingBPM){
@@ -975,5 +1023,22 @@ public class Homepage extends AppCompatActivity {
         }
 
     } // to save BPM monitor
+
+    public void sendDoseAndPhone(BluetoothSocket bluetoothSocket, String dose, String phone) {
+        if (bluetoothSocket != null && bluetoothSocket.isConnected()) {
+            try {
+                String message = "DOSE:" + dose + ",PHONE:" + phone + "\n";
+                OutputStream outputStream = bluetoothSocket.getOutputStream();
+                outputStream.write(message.getBytes());
+                outputStream.flush();
+                Log.d("Bluetooth", "Sent: " + message);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("Bluetooth", "Failed to send data: " + e.getMessage());
+            }
+        } else {
+            Log.w("Bluetooth", "Socket not connected!");
+        }
+    }
 
 }

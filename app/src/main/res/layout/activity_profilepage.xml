@@ -87,8 +87,10 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.758"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+        app:layout_constraintTop_toBottomOf="@+id/textView18"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/LastSession"
@@ -103,7 +105,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.557"
+        app:layout_constraintHorizontal_bias="0.652"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView22"
         app:layout_constraintVertical_bias="0.0" />
@@ -246,7 +248,7 @@
         android:backgroundTint="@color/Primary_Mint_Green"
         android:onClick="ChangePass"
         android:text="Change"
-        android:textColor="@color/Primary_Text"
+        android:textColor="@color/background"
         app:layout_constraintBottom_toBottomOf="@+id/imageView36"
         app:layout_constraintEnd_toEndOf="@+id/imageView36"
         app:layout_constraintHorizontal_bias="1.0"
@@ -257,14 +259,15 @@
     <ImageView
         android:id="@+id/imageView18"
         android:layout_width="298dp"
-        android:layout_height="155dp"
+        android:layout_height="200dp"
         android:layout_marginTop="585dp"
         android:layout_marginBottom="67dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.244"
         app:srcCompat="@drawable/whitebox" />
 
     <TextView
@@ -283,7 +286,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imageView18"
         app:layout_constraintTop_toTopOf="@+id/imageView18"
-        app:layout_constraintVertical_bias="0.538" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView25"
@@ -303,9 +306,9 @@
         android:layout_width="235dp"
         android:layout_height="41dp"
         android:layout_marginStart="17dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="51dp"
         android:layout_marginEnd="61dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="108dp"
         android:background="@drawable/round_border"
         android:ems="10"
         android:fontFamily="@font/baloo_bhai"
@@ -314,10 +317,30 @@
         android:paddingStart="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView18"
         app:layout_constraintEnd_toEndOf="@+id/imageView18"
-        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintHorizontal_bias="0.133"
+        app:layout_constraintStart_toStartOf="@+id/imageView18"
+        app:layout_constraintTop_toTopOf="@+id/imageView18" />
+
+    <EditText
+        android:id="@+id/newgnum"
+        android:layout_width="235dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="61dp"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/round_border"
+        android:ems="10"
+        android:fontFamily="@font/baloo_bhai"
+        android:hint="Enter your Number"
+        android:inputType="numberDecimal"
+        android:paddingStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView18"
+        app:layout_constraintEnd_toEndOf="@+id/imageView18"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imageView18"
         app:layout_constraintTop_toTopOf="@+id/imageView18"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/dosebutton"
@@ -328,12 +351,14 @@
         android:layout_marginEnd="98dp"
         android:layout_marginBottom="11dp"
         android:backgroundTint="@color/Primary_Mint_Green"
-        android:onClick="ChangeDose"
+        android:onClick="ChangeDoseAndGPhone"
         android:text="Change"
-        android:textColor="@color/Primary_Text"
+        android:textColor="@color/background"
         app:layout_constraintBottom_toBottomOf="@+id/imageView18"
         app:layout_constraintEnd_toEndOf="@+id/imageView18"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imageView18"
-        app:layout_constraintTop_toTopOf="@+id/imageView18" />
+        app:layout_constraintTop_toTopOf="@+id/imageView18"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
