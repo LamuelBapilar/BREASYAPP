@@ -37,6 +37,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -253,9 +254,8 @@ public class Records extends AppCompatActivity {
 
     private void filterByRange(String range) {
         final long now = System.currentTimeMillis();
-        final long cutoff; // Declare cutoff as final
+        final long cutoff;
 
-        // Set cutoff time based on the selected range
         switch (range) {
             case "Today":
                 cutoff = now - TimeUnit.DAYS.toMillis(1);
@@ -273,51 +273,33 @@ public class Records extends AppCompatActivity {
                 cutoff = now - TimeUnit.DAYS.toMillis(730);
                 break;
             case "All":
-                cutoff = 0; // No cutoff for "All"
-                break;
             default:
-                cutoff = 0; // Default to no cutoff
+                cutoff = 0;
                 break;
         }
 
-        // Now filter the sessions based on the cutoff time
         DatabaseReference userSessionsRef = FirebaseDatabase.getInstance()
                 .getReference("Records")
-                .child(userfname + " " + userlname); // or use a more secure user ID
+                .child(userfname + " " + userlname); // can replace with UID for security
 
         ArrayList<Session> filteredSessionList = new ArrayList<>();
         userSessionsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot sessionSnap : snapshot.getChildren()) {
-                    // Log the entire session data for debugging
-                    Log.d("FilterRange", "Session data: " + sessionSnap.getValue());
-
                     String timestamp = sessionSnap.getKey();
-
-                    // Log the raw timestamp
-                    Log.d("FilterRange", "Raw timestamp from Firebase: " + timestamp);
-
                     long sessionTimestamp = 0;
 
-                    // Try parsing the timestamp (assuming it is stored in "yyyy-MM-dd HH:mm:ss" format)
                     try {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                         Date date = sdf.parse(timestamp);
                         if (date != null) {
-                            sessionTimestamp = date.getTime(); // Convert to milliseconds
+                            sessionTimestamp = date.getTime();
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
-                    // Log the parsed session timestamp
-                    Log.d("FilterRange", "Parsed session timestamp: " + sessionTimestamp);
-
-                    // Log the comparison of session timestamp with cutoff
-                    Log.d("FilterRange", "Comparing sessionTimestamp: " + sessionTimestamp + " with cutoff: " + cutoff);
-
-                    // Filter the session if the timestamp is after the cutoff
                     if (sessionTimestamp >= cutoff) {
                         int duration = 0;
                         DataSnapshot bpmSnap = sessionSnap.child("bpmRecords");
@@ -328,12 +310,23 @@ public class Records extends AppCompatActivity {
                             }
                         }
 
-                        // Add the session to the filtered list
                         filteredSessionList.add(new Session(timestamp, duration));
                     }
                 }
 
-                // Update the ListView with the filtered sessions
+                // Sort latest first
+                Collections.sort(filteredSessionList, (s1, s2) -> {
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        Date d1 = sdf.parse(s1.getTimestamp());
+                        Date d2 = sdf.parse(s2.getTimestamp());
+                        return d2.compareTo(d1); // Descending
+                    } catch (ParseException e) {
+                        return 0;
+                    }
+                });
+
+                // Set adapter
                 SessionAdapter adapter = new SessionAdapter(Records.this, filteredSessionList, userfname + " " + userlname);
                 ListView listView = findViewById(R.id.recordview);
                 listView.setAdapter(adapter);
@@ -345,6 +338,7 @@ public class Records extends AppCompatActivity {
             }
         });
     }
+
 
     private void startBreathingAnimation() {
         // Inhale animation (scale up)

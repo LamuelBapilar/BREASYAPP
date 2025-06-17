@@ -12,8 +12,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,14 +26,20 @@ import android.telephony.SmsManager;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -54,6 +64,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
+import android.Manifest;
+import android.telephony.SmsManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -64,6 +76,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -74,11 +87,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+
+
 public class Homepage extends AppCompatActivity {
 
     //UI components
     TextView Battery, BPM, Oxygen, Session, greetings, breathTextView, tempview, humview, wethview, airview;
-    String useremail, userfname, userlname, userbday, useraddress, usergphone, usergname, userdose,  Weather, City, AirQuality ;
+    String useremail, userfname, userlname, userbday, useraddress, usergphone, usergname, userdose, userinterval,  Weather, City, AirQuality, fullAddress = null ;
     double Temperature, HeatIndex;
     int Humidity, AQI;
     Switch BTswitch;
@@ -176,7 +191,7 @@ public class Homepage extends AppCompatActivity {
         }); //BT switch
 
         // Location Declaration
-        // fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         //Breathing pattern guide Declaration
         breathcircle = findViewById(R.id.breathCircle);
@@ -189,7 +204,12 @@ public class Homepage extends AppCompatActivity {
         retrieveuserdata(); //retrieve user data
         handleDemoLineGraph();
         checkbtconnection();
-        // fetchLocation();
+        fetchLocation();
+
+        //simpleBTUpdater();
+
+
+
 
     }
 
@@ -252,7 +272,7 @@ public class Homepage extends AppCompatActivity {
                 updateLineChart();
 
                 // Continue every 1 seconds
-                heartRateHandler.postDelayed(this, 1270);
+                heartRateHandler.postDelayed(this, 1100);
             }
         };
 
@@ -284,7 +304,7 @@ public class Homepage extends AppCompatActivity {
         }
 
 
-    }
+    } // reset session erase everything
 
     public void saveSession(View view) {
         DatabaseReference recordsRef = FirebaseDatabase.getInstance().getReference("Records");
@@ -326,9 +346,7 @@ public class Homepage extends AppCompatActivity {
             // Save to Firebase and handle success/failure
             recordsRef.child(userchild).child(sessionKey).setValue(sessionData)
                     .addOnSuccessListener(aVoid -> {
-                        Intent intent = new Intent(this, getClass());
-                        finish();
-                        startActivity(intent);
+                        SessionAlert();
                         Toast.makeText(this, "Session saved", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e ->
@@ -399,6 +417,7 @@ public class Homepage extends AppCompatActivity {
                     usergphone = userSnapshot.child("guardianPhone").getValue(String.class);
                     userbday = userSnapshot.child("birthdate").getValue(String.class);
                     userdose = userSnapshot.child("dose").getValue(String.class);
+                    userinterval = userSnapshot.child("interval").getValue(String.class);
 
                     SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
@@ -409,9 +428,10 @@ public class Homepage extends AppCompatActivity {
                     editor.putString("usergphone", usergphone);
                     editor.putString("usergname", usergname);
                     editor.putString("userdose", userdose);
+                    editor.putString("userinterval", userinterval);
                     editor.apply();
 
-                    greetings.setText("Hello, " + userfname );
+                    greetings.setText("Hello, " + userfname);
 
                 } else {
                     Log.d("FirebaseData", "No user found.");
@@ -450,6 +470,13 @@ public class Homepage extends AppCompatActivity {
                             randomBPM = Integer.parseInt(bpmValue);
                             isRecordingBPM = Boolean.parseBoolean(runningStatus);
                             ObserveisRecordingBPM.set(isRecordingBPM); //set observed isRecordingBPM
+
+                            if ("0:00".equals(SessionTime.trim()) && randomBPM >= 99) {
+                                handler.removeCallbacks(this); // Stop the handler loop
+                                sendAlarmText(); // Call your function here
+                                Toast.makeText(getApplicationContext(), "Sending...", Toast.LENGTH_SHORT).show();
+                                return; // Exit the runnable
+                            }
                         }
 
                     }
@@ -457,7 +484,7 @@ public class Homepage extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                handler.postDelayed(this, 200); // Run again every 0.5s
+                handler.postDelayed(this, 200); // Run again every 0.2s
             }
         };
         handler.post(runnable);
@@ -550,7 +577,7 @@ public class Homepage extends AppCompatActivity {
             );
             BTswitch.setChecked(false);
         }
-    }
+    } // connect to esp32
 
     public void handleDemoLineGraph (){
 
@@ -617,8 +644,70 @@ public class Homepage extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     public void sendmyText(View view) {
-        String text = "BREASY Automated Alarm: "+ userfname + " " + userlname + " session is over, high BPM warning!!! Requesting Assitance at " + useraddress;
+
+        String text_address = useraddress;
+
+        if (fullAddress == null) {
+            text_address = useraddress;
+        } else {
+            text_address = fullAddress;
+        }
+
+        String text = "BREASY Nebulizer Alert: "+ userfname + " " + userlname + " Requesting Assitance at " + text_address;
         String phone = usergphone;
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
+        }
+
+
+
+        if (text.isEmpty() || phone.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Fill all fields!!!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(getApplicationContext(), "Sending...", Toast.LENGTH_SHORT).show();
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                SubscriptionManager subscriptionManager = SubscriptionManager.from(this);
+                int defaultSmsSubscriptionId = SubscriptionManager.getDefaultSmsSubscriptionId();
+                SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(defaultSmsSubscriptionId);
+                ArrayList<String> messageParts = smsManager.divideMessage(text);
+                smsManager.sendMultipartTextMessage(phone, null, messageParts, null, null);
+
+
+            } else {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(phone, null, text, null, null);
+            }
+
+            Toast.makeText(getApplicationContext(), "SMS Sent Successfully!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Failed to send SMS: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+    public void sendAlarmText() {
+
+        String text_address = useraddress;
+
+        if (fullAddress == null) {
+            text_address = useraddress;
+        } else {
+            text_address = fullAddress;
+        }
+
+        String text = "BREASY Nebulizer Alert: "+ userfname + " " + userlname + " session is over, high Heart Rate warning!!! Requesting Assitance at " + text_address;
+        String phone = usergphone;
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
+        }
+
+
 
         if (text.isEmpty() || phone.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Fill all fields!!!", Toast.LENGTH_SHORT).show();
@@ -633,6 +722,7 @@ public class Homepage extends AppCompatActivity {
                 int defaultSmsSubscriptionId = SubscriptionManager.getDefaultSmsSubscriptionId();
                 SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(defaultSmsSubscriptionId);
                 smsManager.sendTextMessage(phone, null, text, null, null);
+
             } else {
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(phone, null, text, null, null);
@@ -775,18 +865,176 @@ public class Homepage extends AppCompatActivity {
         handler.post(pingRunnable); // Start the ping loop
     }   // Check Bluetooth connection every 5 seconds (Buggy)
 
-    //no longer in use functions
+    private void getAddress(double lat, double lon) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lon, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                 fullAddress = addresses.get(0).getAddressLine(0);
+                Toast.makeText(this, "Address: " + fullAddress, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Address not found", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Geocoder error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void fetchLocation() {
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, location -> {
                     if (location != null) {
-                        getWeather(location.getLatitude(), location.getLongitude());
+                        getAddress(location.getLatitude(), location.getLongitude());
                     } else {
                         Toast.makeText(this, "Failed to get location", Toast.LENGTH_SHORT).show();
                     }
                 });
     } //fetch User location
+
+    public void sendDoseAndPhone(BluetoothSocket bluetoothSocket, String dose, String phone) {
+        if (bluetoothSocket != null && bluetoothSocket.isConnected()) {
+            try {
+                String message = "DOSE:" + dose + ",PHONE:" + phone + "\n";
+                OutputStream outputStream = bluetoothSocket.getOutputStream();
+                outputStream.write(message.getBytes());
+                outputStream.flush();
+                Log.d("Bluetooth", "Sent: " + message);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("Bluetooth", "Failed to send data: " + e.getMessage());
+            }
+        } else {
+            Log.w("Bluetooth", "Socket not connected!");
+        }
+    }
+
+    public void SessionAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle("Interval")
+                .setMessage("Do you want to set your next session?")
+                .setPositiveButton("Yes", (dialog, which) -> nextSessionAlert())
+                .setNegativeButton("No", (dialog, which) -> {
+                    dialog.dismiss();
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                })
+                .show();
+    } // alert to setup session
+
+    public void nextSessionAlert() {
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String useremail = prefs.getString("useremail", null);
+
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(50, 40, 50, 10);
+
+        TextView label = new TextView(this);
+        label.setText("Set next Session here:");
+        label.setTextSize(16);
+        label.setPadding(0, 0, 0, 5);
+
+        final EditText input = new EditText(this);
+        input.setHint("Minutes");
+        input.setEms(5);
+
+        container.addView(label);
+        container.addView(input);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Next Session")
+                .setView(container)
+                .setPositiveButton("OK", null)
+                .setNegativeButton("Cancel", (d, w) -> {
+                    Intent intent = new Intent(Homepage.this, Homepage.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .create();
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+
+        usersRef.orderByChild("email").equalTo(useremail)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot userSnap : snapshot.getChildren()) {
+                            String interval = userSnap.child("interval").getValue(String.class);
+                            if (interval != null) {
+                                input.setText(interval);
+                            }
+                            break;
+                        }
+                        dialog.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(Homepage.this, "Failed to load interval", Toast.LENGTH_SHORT).show();
+                        dialog.show();
+                    }
+                });
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            okButton.setOnClickListener(view -> {
+                String inputValue = input.getText().toString().trim();
+
+                if (inputValue.isEmpty()) {
+                    input.setError("Required");
+                    return;
+                }
+
+                int minutes;
+                try {
+                    minutes = Integer.parseInt(inputValue);
+                } catch (NumberFormatException e) {
+                    input.setError("Enter a valid number");
+                    return;
+                }
+
+                // Save new interval to Firebase
+                usersRef.orderByChild("email").equalTo(useremail)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot userSnap : snapshot.getChildren()) {
+                                    userSnap.getRef().child("interval").setValue(String.valueOf(minutes));
+                                    break;
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(Homepage.this, "Failed to save interval", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                dialog.dismiss();
+                setCountdownNotification(minutes);
+                Toast.makeText(this, minutes + " minutes until next session", Toast.LENGTH_SHORT).show();
+            });
+        });
+    }
+
+
+    public void setCountdownNotification(int minutes) {
+        Intent serviceIntent = new Intent(this, CountdownService.class);
+        serviceIntent.putExtra(CountdownService.EXTRA_DURATION, minutes * 60 * 1000L);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    } // countdown for the notifcation
+
+    //no longer in use functions
 
     private void getWeather(double lat, double lon) {
         OkHttpClient client = new OkHttpClient();
@@ -1024,21 +1272,34 @@ public class Homepage extends AppCompatActivity {
 
     } // to save BPM monitor
 
-    public void sendDoseAndPhone(BluetoothSocket bluetoothSocket, String dose, String phone) {
-        if (bluetoothSocket != null && bluetoothSocket.isConnected()) {
-            try {
-                String message = "DOSE:" + dose + ",PHONE:" + phone + "\n";
-                OutputStream outputStream = bluetoothSocket.getOutputStream();
-                outputStream.write(message.getBytes());
-                outputStream.flush();
-                Log.d("Bluetooth", "Sent: " + message);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e("Bluetooth", "Failed to send data: " + e.getMessage());
+    public void simpleBTUpdater() {
+        Handler handler = new Handler();
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                    isRecordingBPM = !isRecordingBPM;
+
+                    // Example static or simulated values (palitan kung may actual Bluetooth input)
+                    String bpmValue = String.valueOf(new Random().nextInt(40) + 60); // Random 60-99
+                    String batteryValue = "95"; // Sample battery
+                    String SessionTime = "0:00"; // Placeholder
+                    String runningStatus = String.valueOf(isRecordingBPM);
+
+                    BPM.setText(bpmValue); // BPM TextView
+                    Battery.setText(batteryValue + "%"); // Battery TextView
+                    Session.setText(SessionTime); // Session TextView
+                    randomBPM = Integer.parseInt(bpmValue);
+                    ObserveisRecordingBPM.set(isRecordingBPM);
+
+
+                handler.postDelayed(this, 10000); // 10 seconds delay
             }
-        } else {
-            Log.w("Bluetooth", "Socket not connected!");
-        }
+        };
+
+        handler.post(runnable);
     }
+
 
 }

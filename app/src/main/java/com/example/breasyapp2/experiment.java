@@ -1,45 +1,30 @@
 package com.example.breasyapp2;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 
 public class experiment extends AppCompatActivity {
 
-    private FusedLocationProviderClient fusedLocationClient;
-    private TextView textWeather;
-    private final String Weather_KEY = "17561e030e960239b678acac686e1ab6"; // Replace with your OpenWeatherMap API key
-
-    String useremail, userfname, userlname, userbday, useraddress, usergphone, usergname, Weather, City, AirQuality ;
-    double Temperature, HeatIndex;
-    int Humidity, AQI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,121 +37,78 @@ public class experiment extends AppCompatActivity {
             return insets;
         });
 
-        textWeather = findViewById(R.id.textWeather);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        fetchLocation();
     }
 
-    private void fetchLocation() {
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    if (location != null) {
-                        getWeather(location.getLatitude(), location.getLongitude());
-                    } else {
-                        Toast.makeText(this, "Failed to get location", Toast.LENGTH_SHORT).show();
-                        fetchLocation();
-                    }
-                });
+    public void SessionAlert(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("Interval")
+                .setMessage("Do you want to set your next session?")
+                .setPositiveButton("Yes", (dialog, which) -> nextSessionAlert())
+                .setNegativeButton("No", null)  // no need to manually dismiss
+                .show();
     }
 
-    private void getWeather(double lat, double lon) {
-        OkHttpClient client = new OkHttpClient();
+    public void nextSessionAlert() {
 
-        String weatherUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat +
-                "&lon=" + lon + "&units=metric&appid=" + Weather_KEY;
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(50, 40, 50, 10);
+        TextView label = new TextView(this);
+        label.setText("Set next Session here:");
+        label.setTextSize(16);
+        label.setPadding(0, 0, 0, 5); // konting spacing below
+        final EditText input = new EditText(this);
+        input.setHint("Minutes");
+        input.setEms(5);
 
-        String airUrl = "https://api.openweathermap.org/data/2.5/air_pollution?lat=" + lat +
-                "&lon=" + lon + "&appid=" + Weather_KEY;
+        container.addView(label);
+        container.addView(input);
 
-        Request weatherRequest = new Request.Builder().url(weatherUrl).build();
-        client.newCall(weatherRequest).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(experiment.this, "❌ Weather fetch failed.", Toast.LENGTH_SHORT).show());
+        // Build dialog
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Next Session")
+                .setView(container)
+                .setPositiveButton("OK", null)
+                .setNegativeButton("Cancel", (d, w) -> d.dismiss())
+                .create();
 
-            }
+        dialog.setOnShowListener(dialogInterface -> {
+            Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            okButton.setOnClickListener(view -> {
+                String inputValue = input.getText().toString().trim();
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try {
-                        String json = response.body().string();
-                        JSONObject obj = new JSONObject(json);
-
-                        String City = obj.getString("name");
-                        JSONObject main = obj.getJSONObject("main");
-                        Temperature = main.getDouble("temp");
-                        HeatIndex = main.getDouble("feels_like");
-                        Humidity = main.getInt("humidity");
-                        Weather = obj.getJSONArray("weather")
-                                .getJSONObject(0).getString("main");
-
-                        // Fetch AQI data now
-                        Request airRequest = new Request.Builder().url(airUrl).build();
-                        client.newCall(airRequest).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
-                                runOnUiThread(() -> Toast.makeText(experiment.this, "🌡 Weather OK\n🌫 AQI fetch failed.", Toast.LENGTH_SHORT).show());
-                            }
-
-                            @Override
-                            public void onResponse(Call call, Response airResponse) throws IOException {
-                                if (airResponse.isSuccessful()) {
-                                    try {
-                                        String airJson = airResponse.body().string();
-                                        JSONObject airObj = new JSONObject(airJson);
-                                        AQI = airObj.getJSONArray("list")
-                                                .getJSONObject(0)
-                                                .getJSONObject("main")
-                                                .getInt("aqi");
-
-                                        String aqiStatus;
-                                        switch (AQI) {
-                                            case 1:
-                                                AirQuality = "Good ✅";
-                                                break;
-                                            case 2:
-                                                AirQuality = "Fair 🙂";
-                                                break;
-                                            case 3:
-                                                AirQuality = "Moderate 😐";
-                                                break;
-                                            case 4:
-                                                AirQuality = "Poor 😷";
-                                                break;
-                                            case 5:
-                                                AirQuality = "Very Poor 🚨";
-                                                break;
-                                            default:
-                                                AirQuality = "Unknown";
-                                        }
-
-                                        String display = "📍 Location: " + City + "\n" +
-                                                "🌡 Temp: " + Temperature + "°C\n" +
-                                                "🥵 Feels Like: " + HeatIndex + "°C\n" +
-                                                "💧 Humidity: " + Humidity + "%\n" +
-                                                "🌤 Weather: " + Weather + "\n" +
-                                                "🌫 Air Quality: " + AirQuality;
-
-                                        runOnUiThread(() -> textWeather.setText(display));
-
-                                    } catch (Exception e) {
-                                        runOnUiThread(() -> Toast.makeText(experiment.this, "\n⚠️ AQI parse error.", Toast.LENGTH_SHORT).show());
-                                    }
-                                }
-                            }
-                        });
-
-                    } catch (Exception e) {
-                        runOnUiThread(() -> Toast.makeText(experiment.this, "⚠️ Weather parse error.", Toast.LENGTH_SHORT).show());
-                    }
-                } else {
-                    runOnUiThread(() -> Toast.makeText(experiment.this, "🚫 Weather API error.", Toast.LENGTH_SHORT).show());
+                if (inputValue.isEmpty()) {
+                    input.setError("Required");
+                    return;
                 }
-            }
+
+                int seconds;
+                try {
+                    seconds = Integer.parseInt(inputValue);
+                } catch (NumberFormatException e) {
+                    input.setError("Enter a valid number");
+                    return;
+                }
+
+                dialog.dismiss();
+                setCountdownNotification(seconds); // call your timer here
+            });
         });
+
+        dialog.show();
     }
+
+
+    public void setCountdownNotification(int minutes) {
+        Intent serviceIntent = new Intent(this, CountdownService.class);
+        serviceIntent.putExtra(CountdownService.EXTRA_DURATION, minutes * 60 * 1000L);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+    }
+
 
 }
