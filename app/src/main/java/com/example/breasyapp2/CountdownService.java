@@ -25,13 +25,20 @@ public class CountdownService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         long duration = intent.getLongExtra(EXTRA_DURATION, 0);
 
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        createNotificationChannel();
+        if (notificationManager == null) {
+            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            createNotificationChannel();
+        }
+
+        // Cancel old countdown if running
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
 
         // Initial notification
         startForeground(NOTIF_ID, buildNotification("Countdown started..."));
 
-        // Start countdown
+        // Start new countdown
         countDownTimer = new CountDownTimer(duration, 1000) {
             public void onTick(long millisUntilFinished) {
                 String timeLeft = formatTime(millisUntilFinished);
@@ -40,11 +47,14 @@ public class CountdownService extends Service {
             }
 
             public void onFinish() {
-                // Trigger your custom broadcast notification
+                // Send broadcast when countdown is done
                 Intent broadcastIntent = new Intent(getApplicationContext(), MyNotificationReceiver.class);
                 getApplicationContext().sendBroadcast(broadcastIntent);
 
-                stopSelf(); // Stop the service
+                // Remove the ongoing notification
+                notificationManager.cancel(NOTIF_ID);
+
+                stopSelf();
             }
         }.start();
 
@@ -52,7 +62,7 @@ public class CountdownService extends Service {
     }
 
     private Notification buildNotification(String contentText) {
-        Intent intent = new Intent(this, experiment.class); // Change to your desired activity
+        Intent intent = new Intent(this, experiment.class); // Change to your target activity
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
@@ -84,6 +94,18 @@ public class CountdownService extends Service {
         int minutes = (int) ((millis / (1000 * 60)) % 60);
         int hours = (int) (millis / (1000 * 60 * 60));
         return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+
+        if (notificationManager != null) {
+            notificationManager.cancel(NOTIF_ID);
+        }
     }
 
     @Override

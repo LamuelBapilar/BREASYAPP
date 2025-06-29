@@ -69,8 +69,10 @@ import android.telephony.SmsManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -98,8 +100,8 @@ public class Homepage extends AppCompatActivity {
     int Humidity, AQI;
     Switch BTswitch;
     //Line Graph
-    int randomBPM = 0, randomOxygen = 0;
-    boolean isRecordingBPM = false;
+    int randomBPM = 0, randomOxygen = 0, inhaleDuration = 4000, holdDuration = 5000, exhaleDuration = 4000;
+    boolean isRecordingBPM = true;
     private Handler heartRateHandler;
     private Runnable heartRateRunnable;
     //Blutooth
@@ -446,6 +448,7 @@ public class Homepage extends AppCompatActivity {
 
     public void demoBTstats() {
         Handler handler = new Handler();
+        StringBuilder messageBuffer = new StringBuilder(); // Para sa buo at hati-hating message
 
         Runnable runnable = new Runnable() {
             public void run() {
@@ -453,38 +456,53 @@ public class Homepage extends AppCompatActivity {
                     if (inputStream != null && inputStream.available() > 0) {
                         byte[] buffer = new byte[1024];
                         int bytes = inputStream.read(buffer);
-                        String message = new String(buffer, 0, bytes).trim();
+                        String received = new String(buffer, 0, bytes);
+                        messageBuffer.append(received); // I-append ang mga piraso ng data
 
-                        // Expected format: "93,97,true,30"
-                        String[] parts = message.split(",");
+                        String fullMessage = messageBuffer.toString();
 
-                        if (parts.length == 4) {
-                            String bpmValue = parts[0];
-                            String batteryValue = parts[1];
-                            String runningStatus = parts[2];
-                            String SessionTime = parts[3];
+                        // Hangga't merong newline na natanggap
+                        while (fullMessage.contains("\n")) {
+                            int newlineIndex = fullMessage.indexOf("\n");
+                            String message = fullMessage.substring(0, newlineIndex).trim(); // Isang buo na message
+                            fullMessage = fullMessage.substring(newlineIndex + 1); // Tanggalin na yung na-process
 
-                            BPM.setText(bpmValue); // BPM TextView
-                            Battery.setText(batteryValue + "%"); // Battery TextView
-                            Session.setText(SessionTime); //Session Textview
-                            randomBPM = Integer.parseInt(bpmValue);
-                            isRecordingBPM = Boolean.parseBoolean(runningStatus);
-                            ObserveisRecordingBPM.set(isRecordingBPM); //set observed isRecordingBPM
+                            if (message.startsWith("DATA:")) {
+                                String dataPart = message.substring(5);
+                                String[] parts = dataPart.split(",");
 
-                            if ("0:00".equals(SessionTime.trim()) && randomBPM >= 99) {
-                                handler.removeCallbacks(this); // Stop the handler loop
-                                sendAlarmText(); // Call your function here
-                                Toast.makeText(getApplicationContext(), "Sending...", Toast.LENGTH_SHORT).show();
-                                return; // Exit the runnable
+                                if (parts.length == 3) {
+                                    String bpmValue = parts[0];
+                                    String batteryValue = parts[1];
+                                    String runningStatus = parts[2];
+
+                                    BPM.setText(bpmValue);
+                                    Battery.setText(batteryValue + "%");
+                                    randomBPM = Integer.parseInt(bpmValue);
+                                    isRecordingBPM = Boolean.parseBoolean(runningStatus);
+                                    ObserveisRecordingBPM.set(isRecordingBPM);
+                                }
+                            } else if (message.startsWith("COUNT:")) {
+                                String SessionTime = message.substring(6);
+                                Session.setText(SessionTime);
+
+                                if ("0:00".equals(SessionTime.trim()) && randomBPM >= 99) {
+                                    handler.removeCallbacks(this);
+                                    sendAlarmText();
+                                    Toast.makeText(getApplicationContext(), "Sending...", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                             }
                         }
-
+                        // I-save ang natirang data na hindi pa kompleto
+                        messageBuffer.setLength(0);
+                        messageBuffer.append(fullMessage);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                handler.postDelayed(this, 200); // Run again every 0.2s
+                handler.postDelayed(this, 200);
             }
         };
         handler.post(runnable);
@@ -734,18 +752,62 @@ public class Homepage extends AppCompatActivity {
         }
     } // send text to guardian
 
+
+    private int getUserAge(String birthday) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+            Date birthDate = sdf.parse(birthday);
+            Calendar birthCal = Calendar.getInstance();
+            birthCal.setTime(birthDate);
+            Calendar today = Calendar.getInstance();
+
+            int age = today.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
+            if (today.get(Calendar.DAY_OF_YEAR) < birthCal.get(Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
+            return age;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+
     private void startBreathingAnimation() {
         int colorStart = Color.parseColor("#6DD19C");
         int colorEnd = Color.parseColor("#f6cb85");
 
-        // INHALE: scale up + color transition
+        int age = getUserAge(userbday);
+
+        // Set durations based on age group
+        if (age >= 0 && age <= 2) {
+            inhaleDuration = 1500;
+            holdDuration = 0;
+            exhaleDuration = 1500;
+        } else if (age >= 3 && age <= 6) {
+            inhaleDuration = 2000;
+            holdDuration = 500;
+            exhaleDuration = 2000;
+        } else if (age >= 7 && age <= 17) {
+            inhaleDuration = 3500;
+            holdDuration = 1500;
+            exhaleDuration = 3500;
+        } else {
+            inhaleDuration = 4500;
+            holdDuration = 1500;
+            exhaleDuration = 4500;
+        }
+
+        Toast.makeText(this, "your age: " + age, Toast.LENGTH_SHORT).show();
+
+        // INHALE
         ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1f, 1.4f);
         ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1f, 1.4f);
-        scaleUpX.setDuration(3000);
-        scaleUpY.setDuration(3000);
+        scaleUpX.setDuration(inhaleDuration);
+        scaleUpY.setDuration(inhaleDuration);
 
         ValueAnimator inhaleColor = ValueAnimator.ofArgb(colorStart, colorEnd);
-        inhaleColor.setDuration(3000);
+        inhaleColor.setDuration(inhaleDuration);
         inhaleColor.addUpdateListener(animation -> {
             int color = (int) animation.getAnimatedValue();
             breathcircle.setBackgroundTintList(ColorStateList.valueOf(color));
@@ -760,14 +822,24 @@ public class Homepage extends AppCompatActivity {
             }
         });
 
-        // EXHALE: scale down + color reverse
+        // HOLD
+        ValueAnimator holdAnimator = ValueAnimator.ofInt(0, 0); // dummy animator
+        holdAnimator.setDuration(holdDuration);
+        holdAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (holdDuration > 0) breathTextView.setText("Hold");
+            }
+        });
+
+        // EXHALE
         ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(breathcircle, "scaleX", 1.4f, 1f);
         ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(breathcircle, "scaleY", 1.4f, 1f);
-        scaleDownX.setDuration(4000);
-        scaleDownY.setDuration(4000);
+        scaleDownX.setDuration(exhaleDuration);
+        scaleDownY.setDuration(exhaleDuration);
 
         ValueAnimator exhaleColor = ValueAnimator.ofArgb(colorEnd, colorStart);
-        exhaleColor.setDuration(4000);
+        exhaleColor.setDuration(exhaleDuration);
         exhaleColor.addUpdateListener(animation -> {
             int color = (int) animation.getAnimatedValue();
             breathcircle.setBackgroundTintList(ColorStateList.valueOf(color));
@@ -782,22 +854,23 @@ public class Homepage extends AppCompatActivity {
             }
         });
 
-        // LOOP: inhale → exhale
+        // LOOP EVERYTHING
         breathingSet = new AnimatorSet();
-        breathingSet.playSequentially(inhaleSet, exhaleSet);
+        breathingSet.playSequentially(inhaleSet, holdAnimator, exhaleSet);
         breathingSet.setStartDelay(500);
 
         breathingSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (breathingSet != null) {
-                    breathingSet.start(); // Loop
+                    breathingSet.start(); // loop ulit
                 }
             }
         });
 
         breathingSet.start();
-    }// start breathing guide circle
+    }
+    // start breathing guide circle
 
     private void stopBreathingAnimation() {
         if (breathingSet != null) {
@@ -1020,19 +1093,27 @@ public class Homepage extends AppCompatActivity {
         });
     }
 
-
     public void setCountdownNotification(int minutes) {
+        // First, stop the existing service if running
+        Intent stopIntent = new Intent(this, CountdownService.class);
+        stopService(stopIntent);
+
+        // Start the new countdown
         Intent serviceIntent = new Intent(this, CountdownService.class);
         serviceIntent.putExtra(CountdownService.EXTRA_DURATION, minutes * 60 * 1000L);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         } else {
             startService(serviceIntent);
         }
+
+        // Refresh the page
         Intent intent = getIntent();
         finish();
         startActivity(intent);
-    } // countdown for the notifcation
+    }
+// countdown for the notifcation
 
     //no longer in use functions
 
@@ -1294,7 +1375,7 @@ public class Homepage extends AppCompatActivity {
                     ObserveisRecordingBPM.set(isRecordingBPM);
 
 
-                handler.postDelayed(this, 10000); // 10 seconds delay
+                handler.postDelayed(this, 20000); // 10 seconds delay
             }
         };
 

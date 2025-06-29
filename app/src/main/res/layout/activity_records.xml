@@ -54,10 +54,10 @@
         android:id="@+id/buttonAll"
         android:layout_width="47dp"
         android:layout_height="35dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="407dp"
-        android:layout_marginEnd="289dp"
-        android:layout_marginBottom="340dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="424dp"
+        android:layout_marginEnd="312dp"
+        android:layout_marginBottom="348dp"
         android:backgroundTint="@color/Primary_Mint_Green"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
@@ -65,18 +65,18 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/button2Y"
         android:layout_width="43dp"
         android:layout_height="36dp"
-        android:layout_marginTop="407dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="339dp"
+        android:layout_marginStart="315dp"
+        android:layout_marginTop="423dp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="348dp"
         android:backgroundTint="#DDDDDD"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
@@ -84,12 +84,9 @@
         android:textColor="#666666"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageView25"
-        app:layout_constraintHorizontal_bias="0.992"
-        app:layout_constraintStart_toStartOf="@+id/imageView25"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonToday"
@@ -102,7 +99,7 @@
         android:backgroundTint="#DDDDDD"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:text="Today"
+        android:text="24h"
         android:textColor="#666666"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
