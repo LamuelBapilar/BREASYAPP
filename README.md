@@ -87,5 +87,5 @@ Documentation and Images: https://drive.google.com/drive/folders/1y0Dl5jnTFbLRE3
 9. If emergency alert is triggered, the app sends an SMS with GPS location to the respective emergency responder/contact
 10. User reviews past sessions in Records
 
---
+---
 
